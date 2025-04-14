@@ -13178,28 +13178,6 @@
 
         if LeaPlusLC["RecentChatWindow"] == "On" and not LeaLockList["RecentChatWindow"] then
 
-            function InputScrollFrame_OnLoad(self)
-                if self.ScrollBar then
-                    local scrollBar = self.ScrollBar
-                    scrollBar:ClearAllPoints()
-                    scrollBar:SetPoint("TOPLEFT", self, "TOPRIGHT", -13, -11)
-                    scrollBar:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", -13, 9)
-                    self.ScrollBar.ScrollDownButton:SetPoint("TOP", scrollBar, "BOTTOM", 0, 4)
-                    self.ScrollBar.ScrollUpButton:SetPoint("BOTTOM", scrollBar, "TOP", 0, -4)
-                    self.scrollBarHideable = 1
-                    scrollBar:Hide()
-                end
-                self.EditBox:SetWidth(self:GetWidth() - 18)
-                self.EditBox:SetMaxLetters(self.maxLetters)
-                self.EditBox.Instructions:SetText(self.instructions)
-                self.EditBox.Instructions:SetWidth(self:GetWidth())
-                self.EditBox.HasStickyFocus = function()
-                    return DoesAncestryInclude(self, GetMouseFocus())
-                end
-                self.CharCount:SetShown(not self.hideCharCount)
-            end
-
-
             -- Create recent chat frame
             local editFrame = CreateFrame("ScrollFrame", "LeatrixEditFrame", UIParent, "Leatrix_InputScrollFrameTemplate")
 
@@ -13228,7 +13206,8 @@
 
 
             -- Create title bar
-            local titleFrame = CreateFrame("ScrollFrame", nil, editFrame, "Leatrix_InputScrollFrameTemplate")
+            local titleFrame = CreateFrame("ScrollFrame", "LeatrixTitleFrame", editFrame, "Leatrix_InputScrollFrameTemplate")
+            if titleFrame.CharCount then titleFrame.CharCount:Hide() end
             titleFrame:ClearAllPoints()
             titleFrame:SetPoint("TOP", 0, 40)
             titleFrame:SetSize(600, 36)
@@ -13307,6 +13286,11 @@
             scrollFrame:SetPoint("TOPLEFT", editFrame, 26, -36)
             scrollFrame:SetPoint("BOTTOMRIGHT", editFrame, "BOTTOMRIGHT", -34, 8)
             scrollFrame:EnableMouseWheel(true)
+
+            -- Create CharCount font string to avoid lua error for it not existing on WoW Sirus
+            scrollFrame.CharCount = scrollFrame:CreateFontString(nil, "OVERLAY", "GameFontDisableLarge")
+            scrollFrame.CharCount:Hide()
+
 
             -- Set the existing edit box as the scroll child
             scrollFrame:SetScrollChild(editBox)
