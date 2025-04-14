@@ -13178,6 +13178,28 @@
 
         if LeaPlusLC["RecentChatWindow"] == "On" and not LeaLockList["RecentChatWindow"] then
 
+            function InputScrollFrame_OnLoad(self)
+                if self.ScrollBar then
+                    local scrollBar = self.ScrollBar
+                    scrollBar:ClearAllPoints()
+                    scrollBar:SetPoint("TOPLEFT", self, "TOPRIGHT", -13, -11)
+                    scrollBar:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", -13, 9)
+                    self.ScrollBar.ScrollDownButton:SetPoint("TOP", scrollBar, "BOTTOM", 0, 4)
+                    self.ScrollBar.ScrollUpButton:SetPoint("BOTTOM", scrollBar, "TOP", 0, -4)
+                    self.scrollBarHideable = 1
+                    scrollBar:Hide()
+                end
+                self.EditBox:SetWidth(self:GetWidth() - 18)
+                self.EditBox:SetMaxLetters(self.maxLetters)
+                self.EditBox.Instructions:SetText(self.instructions)
+                self.EditBox.Instructions:SetWidth(self:GetWidth())
+                self.EditBox.HasStickyFocus = function()
+                    return DoesAncestryInclude(self, GetMouseFocus())
+                end
+                self.CharCount:SetShown(not self.hideCharCount)
+            end
+
+
             -- Create recent chat frame
             local editFrame = CreateFrame("ScrollFrame", "LeatrixEditFrame", UIParent, "Leatrix_InputScrollFrameTemplate")
 
